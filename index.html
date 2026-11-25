@@ -12,8 +12,7 @@
       font-family: Arial, sans-serif;
       background: #f2f4f7;
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 15px;
     }
 
     .container {
@@ -24,14 +23,32 @@
       border-radius: 12px;
     }
 
-    h2 {
+    h2, h3 {
+      text-align: center;
       color: #174b2b;
     }
 
+    label {
+      display: block;
+      margin-top: 13px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
     button {
-      padding: 12px 20px;
-      margin: 8px;
-      border: 0;
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border: none;
       border-radius: 6px;
       color: white;
       background: #16803c;
@@ -43,119 +60,207 @@
       background: #c62828;
     }
 
+    #lanjut {
+      background: #1565c0;
+    }
+
     #reader {
       width: 100%;
       margin: 15px auto;
     }
 
     #hasil {
-      padding: 12px;
+      margin-top: 15px;
+      padding: 13px;
       background: #eef5ee;
       border-radius: 6px;
       overflow-wrap: anywhere;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+<div class="container">
 
-    <h2>ABSENSI QR</h2>
-    <h3>SMAS KARYA PRAJA</h3>
+  <h2>ABSENSI QR</h2>
+  <h3>SMAS KARYA PRAJA</h3>
 
-    <button onclick="mulaiScan()">
-      AKTIFKAN KAMERA
-    </button>
+  <label>PIN PETUGAS</label>
+  <input
+    type="password"
+    id="pin"
+    inputmode="numeric"
+    placeholder="Masukkan PIN petugas"
+  >
 
-    <button id="stop" onclick="hentikanScan()">
-      MATIKAN KAMERA
-    </button>
+  <label>NAMA GURU / PETUGAS PIKET</label>
+  <input
+    type="text"
+    id="petugas"
+    placeholder="Masukkan nama petugas"
+  >
 
-    <div id="reader"></div>
+  <label>STATUS KEHADIRAN</label>
+  <select id="status">
+    <option value="HADIR">HADIR</option>
+    <option value="TERLAMBAT">TERLAMBAT</option>
+    <option value="IZIN">IZIN</option>
+    <option value="SAKIT">SAKIT</option>
+    <option value="ALPA">ALPA</option>
+    <option value="PULANG">PULANG</option>
+    <option value="DINAS">DINAS</option>
+  </select>
 
-    <h3>Hasil Pemindaian:</h3>
+  <button onclick="mulaiScan()">AKTIFKAN KAMERA</button>
+  <button id="stop" onclick="hentikanScan()">MATIKAN KAMERA</button>
+  <button id="lanjut" onclick="scanLagi()" style="display:none">
+    SCAN BERIKUTNYA
+  </button>
 
-    <div id="hasil">
-      Belum ada QR yang dipindai.
-    </div>
+  <div id="reader"></div>
 
-  </div>
+  <h3>HASIL ABSENSI</h3>
+  <div id="hasil">Siap melakukan pemindaian QR.</div>
 
-  <script>
-    let scanner = null;
-    let berjalan = false;
-    let sedangMulai = false;
+</div>
 
-    function mulaiScan() {
+<script>
+const URL_APPS_SCRIPT =
+"https://script.google.com/macros/s/AKfycbzHcBAnuWQKkpFDg0MRPn019gDyyU_Yue3vOqlUMT7rC_rDy4lraLXnCOObYSYX8Kek/exec";
 
-      if (berjalan || sedangMulai) return;
+let scanner = null;
+let berjalan = false;
+let sedangMulai = false;
+let sedangProses = false;
 
-      if (typeof Html5Qrcode === "undefined") {
-        alert("Library pemindai QR belum berhasil dimuat. Periksa koneksi internet.");
-        return;
-      }
+function tampilkan(pesan) {
+  document.getElementById("hasil").innerText = pesan;
+}
 
-      sedangMulai = true;
+function mulaiScan() {
 
-      scanner = new Html5Qrcode("reader");
+  if (berjalan || sedangMulai) return;
 
-      scanner.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: {
-            width: 250,
-            height: 250
-          }
-        },
+  if (!document.getElementById("pin").value.trim()) {
+    alert("Masukkan PIN petugas terlebih dahulu.");
+    return;
+  }
 
-        function(decodedText) {
+  if (!document.getElementById("petugas").value.trim()) {
+    alert("Masukkan nama petugas terlebih dahulu.");
+    return;
+  }
 
-          document.getElementById("hasil").innerText =
-            decodedText;
+  sedangMulai = true;
+  scanner = new Html5Qrcode("reader");
 
-          scanner.pause(true);
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
 
-        },
+    function(decodedText) {
+      if (sedangProses) return;
 
-        function(errorMessage) {
-          // Proses pencarian QR berlangsung.
-        }
+      sedangProses = true;
+      scanner.pause(true);
 
-      ).then(function() {
+      kirimAbsensi(decodedText);
+    },
 
-        berjalan = true;
-        sedangMulai = false;
+    function(errorMessage) {}
 
-      }).catch(function(error) {
+  ).then(function() {
+    berjalan = true;
+    sedangMulai = false;
+    tampilkan("Kamera aktif. Silakan pindai QR.");
+  }).catch(function(error) {
+    sedangMulai = false;
+    tampilkan("Kamera gagal dibuka: " + error);
+  });
+}
 
-        berjalan = false;
-        sedangMulai = false;
+async function kirimAbsensi(qrText) {
 
-        alert("Kamera gagal dibuka: " + error);
+  tampilkan("QR terbaca: " + qrText + "\nMengirim data absensi...");
 
-      });
+  const data = {
+    pin: document.getElementById("pin").value.trim(),
+    qrText: qrText,
+    status: document.getElementById("status").value,
+    namaPetugas: document.getElementById("petugas").value.trim()
+  };
+
+  try {
+
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error("Server memberikan respons " + response.status);
     }
 
-    function hentikanScan() {
+    const hasil = await response.json();
 
-      if (scanner && berjalan) {
-
-        scanner.stop().then(function() {
-
-          scanner.clear();
-          berjalan = false;
-
-        }).catch(function(error) {
-
-          alert("Gagal mematikan kamera: " + error);
-
-        });
-
-      }
-
+    if (hasil.ok) {
+      tampilkan(
+        "BERHASIL DISIMPAN\n\n" +
+        "Nama: " + hasil.nama + "\n" +
+        "ID: " + qrText + "\n" +
+        "Jenis: " + hasil.jenis + "\n" +
+        "Kelompok: " + hasil.kelompok + "\n" +
+        "Status: " + hasil.status + "\n" +
+        "Jam: " + hasil.jam
+      );
+    } else {
+      tampilkan("ABSENSI DITOLAK\n\n" + hasil.message);
     }
-  </script>
+
+  } catch (error) {
+
+    tampilkan(
+      "GAGAL MENGHUBUNGI SERVER\n\n" +
+      error.message +
+      "\n\nPeriksa koneksi dan konfigurasi Web App."
+    );
+
+  }
+
+  document.getElementById("lanjut").style.display = "block";
+  sedangProses = false;
+}
+
+function scanLagi() {
+
+  if (scanner && berjalan) {
+    document.getElementById("lanjut").style.display = "none";
+    sedangProses = false;
+    scanner.resume();
+    tampilkan("Silakan pindai QR berikutnya.");
+  }
+
+}
+
+function hentikanScan() {
+
+  if (scanner && berjalan) {
+    scanner.stop().then(function() {
+      scanner.clear();
+      berjalan = false;
+      sedangProses = false;
+      tampilkan("Kamera sudah dimatikan.");
+    }).catch(function(error) {
+      tampilkan("Gagal mematikan kamera: " + error);
+    });
+  }
+
+}
+</script>
 
 </body>
 </html>
