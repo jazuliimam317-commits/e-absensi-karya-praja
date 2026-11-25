@@ -1,0 +1,20 @@
+scanner = new Html5Qrcode('reader');
+
+      scanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 240, height: 240 } },
+        function(teks) {
+          document.getElementById('hasil').textContent =
+            'QR TERBACA: ' + teks;
+          scanner.pause(true);
+        },
+        function() {}
+      ).catch(function(error) {
+        scanner = null;
+        document.getElementById('hasil').textContent =
+          'Gagal membuka kamera: ' + error;
+      });
+    }
+  </script>
+</body>
+</html>
