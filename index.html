@@ -496,22 +496,20 @@ async function muatRekap() {
 
     let rincian = "";
 
-    Object.entries(data.status).forEach(([nama, jumlah]) => {
-      rincian += `<p>${nama}: <b>${jumlah}</b></p>`;
-    });
+Object.entries(data.status).forEach(([nama, jumlah]) => {
+  rincian += `<p>${nama}: <b>${jumlah}</b></p>`;
+});
 
-    tempat.innerHTML = `
-      <p>Jumlah Siswa: <b>${data.siswa}</b></p>
-      <p>Jumlah Guru/Tendik: <b>${data.guru}</b></p>
-      <p>Total Absensi: <b>${data.total}</b></p>
-      <hr>
-      <b>Rincian Status</b>
-      ${rincian || "<p>Belum ada absensi hari ini.</p>"}
-    `;
+document.getElementById("jumlahSiswa").innerText = data.siswa;
+document.getElementById("jumlahGuru").innerText = data.guru;
+document.getElementById("jumlahTotal").innerText = data.total;
 
-  } catch (error) {
-    tempat.innerHTML = "Rekap belum dapat dimuat: " + error.message;
-  }
+document.getElementById("rincianStatus").innerHTML =
+  rincian || "<p>Belum ada absensi hari ini.</p>";
+
+} catch (error) {
+  tempat.innerHTML = "Rekap belum dapat dimuat: " + error.message;
+}
 }
 
 // MEMUAT RIWAYAT
