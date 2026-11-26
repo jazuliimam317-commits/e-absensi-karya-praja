@@ -333,9 +333,10 @@ window.addEventListener("load", muatRekap);
       </div>
     `).join("");
 
-  } catch (error) {
-    tempat.innerHTML = "Riwayat belum dapat dimuat.";
-  }
+ } catch (error) {
+  tempat.innerHTML =
+    "GAGAL MEMUAT RIWAYAT: " + error.message;
+}
 }
 </script>
 
