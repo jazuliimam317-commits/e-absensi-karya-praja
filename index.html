@@ -124,6 +124,11 @@
 <div id="rekap">
   <p>Memuat rekap...</p>
 </div>
+  <h3>RIWAYAT ABSENSI HARI INI</h3>
+
+<div id="riwayat">
+  Memuat riwayat absensi...
+</div>
   <h3>HASIL ABSENSI</h3>
   <div id="hasil">Siap melakukan pemindaian QR.</div>
 
@@ -236,6 +241,8 @@ async function kirimAbsensi(qrText) {
   }
 
   document.getElementById("lanjut").style.display = "block";
+  muatRekap();
+muatRiwayat();
   sedangProses = false;
 }
 
@@ -309,6 +316,26 @@ function hentikanScan() {
 }
 
 window.addEventListener("load", muatRekap);
+   if (hasil.data.length === 0) {
+      tempat.innerHTML = "Belum ada absensi hari ini.";
+      return;
+    }
+
+    tempat.innerHTML = hasil.data.map(item => `
+      <div style="border-bottom:1px solid #ddd;padding:10px 0;">
+        <b>${item.nama}</b><br>
+        ID: ${item.id}<br>
+        Jenis: ${item.jenis}<br>
+        Kelas/Jabatan: ${item.kelompok}<br>
+        Status: ${item.status}<br>
+        Jam: ${item.jam}
+      </div>
+    `).join("");
+
+  } catch (error) {
+    tempat.innerHTML = "Riwayat belum dapat dimuat.";
+  }
+}
 </script>
 
 </body>
