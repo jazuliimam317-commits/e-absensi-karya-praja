@@ -147,8 +147,8 @@ function tampilkan(pesan) {
   document.getElementById("hasil").innerText = pesan;
 }
 
+// MEMULAI KAMERA
 function mulaiScan() {
-
   if (berjalan || sedangMulai) return;
 
   if (!document.getElementById("pin").value.trim()) {
@@ -173,7 +173,6 @@ function mulaiScan() {
 
       sedangProses = true;
       scanner.pause(true);
-
       kirimAbsensi(decodedText);
     },
 
@@ -183,14 +182,15 @@ function mulaiScan() {
     berjalan = true;
     sedangMulai = false;
     tampilkan("Kamera aktif. Silakan pindai QR.");
+
   }).catch(function(error) {
     sedangMulai = false;
     tampilkan("Kamera gagal dibuka: " + error);
   });
 }
 
+// MENGIRIM DATA ABSENSI
 async function kirimAbsensi(qrText) {
-
   tampilkan("QR terbaca: " + qrText + "\nMengirim data absensi...");
 
   const data = {
@@ -201,7 +201,6 @@ async function kirimAbsensi(qrText) {
   };
 
   try {
-
     const response = await fetch(URL_APPS_SCRIPT, {
       method: "POST",
       headers: {
@@ -231,47 +230,47 @@ async function kirimAbsensi(qrText) {
     }
 
   } catch (error) {
-
     tampilkan(
       "GAGAL MENGHUBUNGI SERVER\n\n" +
       error.message +
       "\n\nPeriksa koneksi dan konfigurasi Web App."
     );
-
   }
 
   document.getElementById("lanjut").style.display = "block";
-  muatRekap();
-muatRiwayat();
   sedangProses = false;
+
+  muatRekap();
+  muatRiwayat();
 }
 
+// SCAN BERIKUTNYA
 function scanLagi() {
-
   if (scanner && berjalan) {
     document.getElementById("lanjut").style.display = "none";
     sedangProses = false;
     scanner.resume();
     tampilkan("Silakan pindai QR berikutnya.");
   }
-
 }
 
+// MEMATIKAN KAMERA
 function hentikanScan() {
-
   if (scanner && berjalan) {
     scanner.stop().then(function() {
       scanner.clear();
       berjalan = false;
       sedangProses = false;
       tampilkan("Kamera sudah dimatikan.");
+
     }).catch(function(error) {
       tampilkan("Gagal mematikan kamera: " + error);
     });
   }
-
 }
-  async function muatRekap() {
+
+// MEMUAT REKAP
+async function muatRekap() {
   const tempat = document.getElementById("rekap");
 
   try {
@@ -311,13 +310,36 @@ function hentikanScan() {
     `;
 
   } catch (error) {
-    tempat.innerHTML = "Rekap belum dapat dimuat.";
+    tempat.innerHTML = "Rekap belum dapat dimuat: " + error.message;
   }
 }
 
-window.addEventListener("load", muatRekap);
-  window.addEventListener("load", muatRiwayat);
-   if (hasil.data.length === 0) {
+// MEMUAT RIWAYAT
+async function muatRiwayat() {
+  const tempat = document.getElementById("riwayat");
+
+  try {
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "RIWAYAT"
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Gagal mengambil riwayat.");
+    }
+
+    const hasil = await response.json();
+
+    if (!hasil.ok) {
+      throw new Error("Riwayat tidak tersedia.");
+    }
+
+    if (hasil.data.length === 0) {
       tempat.innerHTML = "Belum ada absensi hari ini.";
       return;
     }
@@ -333,12 +355,17 @@ window.addEventListener("load", muatRekap);
       </div>
     `).join("");
 
- } catch (error) {
-  tempat.innerHTML =
-    "GAGAL MEMUAT RIWAYAT: " + error.message;
+  } catch (error) {
+    tempat.innerHTML =
+      "GAGAL MEMUAT RIWAYAT: " + error.message;
+  }
 }
-}
-</script>
 
+// MEMUAT REKAP DAN RIWAYAT SAAT HALAMAN DIBUKA
+window.addEventListener("load", function() {
+  muatRekap();
+  muatRiwayat();
+});
+</script>
 </body>
 </html>
