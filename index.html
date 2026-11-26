@@ -218,8 +218,29 @@ button:active {
   <div id="reader"></div>
 <h3>REKAP KEHADIRAN HARI INI</h3>
 
-<div id="rekap">
-  <p>Memuat rekap...</p>
+<div id="rekap" class="rekap-grid">
+  <div class="kartu-rekap">
+    <span>👨‍🎓</span>
+    <p>Jumlah Siswa</p>
+    <strong id="jumlahSiswa">0</strong>
+  </div>
+
+  <div class="kartu-rekap">
+    <span>👩‍🏫</span>
+    <p>Guru/Tendik</p>
+    <strong id="jumlahGuru">0</strong>
+  </div>
+
+  <div class="kartu-rekap total">
+    <span>📊</span>
+    <p>Total Absensi</p>
+    <strong id="jumlahTotal">0</strong>
+  </div>
+
+  <div class="rincian-status">
+    <b>Rincian Status Kehadiran</b>
+    <div id="rincianStatus">Memuat data...</div>
+  </div>
 </div>
   <h3>RIWAYAT ABSENSI HARI INI</h3>
 
