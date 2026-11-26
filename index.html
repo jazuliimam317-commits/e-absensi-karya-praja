@@ -543,15 +543,19 @@ async function muatRiwayat() {
     }
 
     tempat.innerHTML = hasil.data.map(item => `
-      <div style="border-bottom:1px solid #ddd;padding:10px 0;">
-        <b>${item.nama}</b><br>
-        ID: ${item.id}<br>
-        Jenis: ${item.jenis}<br>
-        Kelas/Jabatan: ${item.kelompok}<br>
-        Status: ${item.status}<br>
-        Jam: ${item.jam}
-      </div>
-    `).join("");
+  <div class="item-riwayat">
+    <div class="riwayat-header">
+      <b>${item.nama}</b>
+      <span class="status-riwayat">${item.status}</span>
+    </div>
+    <div class="riwayat-detail">
+      <span>ID: ${item.id}</span>
+      <span>Jenis: ${item.jenis}</span>
+      <span>Kelas/Jabatan: ${item.kelompok}</span>
+      <span>Jam: ${item.jam}</span>
+    </div>
+  </div>
+`).join("");
 
   } catch (error) {
     tempat.innerHTML =
