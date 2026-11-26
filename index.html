@@ -271,6 +271,30 @@ function hentikanScan() {
     });
   }
 }
+  // GANTI PETUGAS
+async function gantiPetugas() {
+  if (scanner && berjalan) {
+    try {
+      await scanner.stop();
+      scanner.clear();
+    } catch (error) {
+      tampilkan("Kamera gagal dimatikan: " + error);
+      return;
+    }
+  }
+
+  scanner = null;
+  berjalan = false;
+  sedangMulai = false;
+  sedangProses = false;
+
+  document.getElementById("pin").value = "";
+  document.getElementById("petugas").value = "";
+  document.getElementById("status").value = "HADIR";
+  document.getElementById("lanjut").style.display = "none";
+
+  tampilkan("Petugas sebelumnya sudah keluar. Silakan masukkan PIN dan nama petugas berikutnya.");
+}
 
 // MEMUAT REKAP
 async function muatRekap() {
