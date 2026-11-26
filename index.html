@@ -613,7 +613,79 @@ async function muatRiwayat() {
       "GAGAL MEMUAT RIWAYAT: " + error.message;
   }
 }
+// MENAMPILKAN LAPORAN ABSENSI
+async function tampilkanLaporan() {
+  const tanggal = document.getElementById("tanggalLaporan").value;
+  const tempat = document.getElementById("hasilLaporan");
 
+  if (!tanggal) {
+    alert("Silakan pilih tanggal laporan terlebih dahulu.");
+    return;
+  }
+
+  tempat.innerHTML = "Sedang mengambil data laporan...";
+
+  try {
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "LAPORAN",
+        tanggal: tanggal
+      })
+    });
+
+    const hasil = await response.json();
+
+    if (!hasil.ok) {
+      throw new Error(hasil.message || "Laporan gagal dimuat.");
+    }
+
+    let rincian = "";
+
+    Object.entries(hasil.status).forEach(([nama, jumlah]) => {
+      rincian += `<p>${nama}: <b>${jumlah}</b></p>`;
+    });
+
+    let daftar = "";
+
+    if (hasil.data.length > 0) {
+      daftar = hasil.data.map(item => `
+        <div class="item-riwayat">
+          <b>${item.nama}</b>
+          <div class="riwayat-detail">
+            <span>ID: ${item.id}</span>
+            <span>Jenis: ${item.jenis}</span>
+            <span>Kelas/Jabatan: ${item.kelompok}</span>
+            <span>Status: ${item.status}</span>
+            <span>Jam: ${item.jam}</span>
+          </div>
+        </div>
+      `).join("");
+    } else {
+      daftar = "<p>Tidak ada data absensi pada tanggal ini.</p>";
+    }
+
+    tempat.innerHTML = `
+      <h3>HASIL LAPORAN</h3>
+      <p>Tanggal: <b>${tanggal}</b></p>
+      <p>Jumlah Siswa: <b>${hasil.siswa}</b></p>
+      <p>Jumlah Guru/Tendik: <b>${hasil.guru}</b></p>
+      <p>Total Absensi: <b>${hasil.total}</b></p>
+      <hr>
+      <b>Rincian Status</b>
+      ${rincian || "<p>Belum ada data.</p>"}
+      <hr>
+      <b>Daftar Kehadiran</b>
+      ${daftar}
+    `;
+
+  } catch (error) {
+    tempat.innerHTML = "GAGAL MEMUAT LAPORAN: " + error.message;
+  }
+}
 // MEMUAT REKAP DAN RIWAYAT SAAT HALAMAN DIBUKA
 window.addEventListener("load", function() {
   muatRekap();
