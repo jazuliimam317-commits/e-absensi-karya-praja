@@ -1,790 +1,248 @@
-<!DOCTYPE html>
-<html lang="id">
+
+    <!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
+  <base target="_top">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ABSENSI QR - SMAS KARYA PRAJA</title>
-
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f4f7;
-      margin: 0;
-      padding: 15px;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-    }
-
-    h2, h3 {
-      text-align: center;
-      color: #174b2b;
-    }
-
-    label {
-      display: block;
-      margin-top: 13px;
-      font-weight: bold;
-    }
-
-    input, select {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 13px;
-      margin-top: 12px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      background: #16803c;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #stop {
-      background: #c62828;
-    }
-
-    #lanjut {
-      background: #1565c0;
-    }
-
-    #reader {
-      width: 100%;
-      margin: 15px auto;
-    }
-
-    #hasil {
-      margin-top: 15px;
-      padding: 13px;
-      background: #eef5ee;
-      border-radius: 6px;
-      overflow-wrap: anywhere;
-      text-align: center;
-    }
-    /* PENYEMPURNAAN TAMPILAN E-ABSENSI */
-
-body {
-  background: linear-gradient(135deg, #e8f5e9, #f5f7f5);
-  color: #26352a;
-}
-
-.container {
-  max-width: 520px;
-  margin: 20px auto;
-  padding: 22px;
-  border-radius: 18px;
-  box-shadow: 0 5px 22px rgba(0, 70, 30, 0.12);
-}
-
-h2 {
-  background: #176b38;
-  color: white;
-  padding: 17px 10px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-}
-
-h3 {
-  color: #176b38;
-  margin-top: 22px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #d5e8d9;
-}
-
-button {
-  border-radius: 9px;
-  font-weight: bold;
-  transition: 0.2s;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-#rekap, #riwayat, #hasil {
-  background: #f7fbf7;
-  border: 1px solid #d7e8da;
-  border-radius: 10px;
-  padding: 14px;
-  margin-top: 10px;
-  line-height: 1.6;
-}
-
-#rekap p {
-  margin: 7px 0;
-}
-
-#riwayat {
-  max-height: 350px;
-  overflow-y: auto;
-}
-
-#ganti {
-  background: #b8860b;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  .container {
-    margin: 5px auto;
-    padding: 16px;
-  }
-}
-    /* DESAIN KARTU REKAP ABSENSI */
-
-.rekap-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.kartu-rekap {
-  background: white;
-  border: 1px solid #d7e8da;
-  border-radius: 13px;
-  padding: 16px 10px;
-  text-align: center;
-  box-shadow: 0 3px 10px rgba(0, 70, 30, 0.08);
-}
-
-.kartu-rekap span {
-  font-size: 27px;
-}
-
-.kartu-rekap p {
-  margin: 7px 0;
-  color: #647568;
-  font-size: 13px;
-}
-
-.kartu-rekap strong {
-  font-size: 27px;
-  color: #176b38;
-}
-
-.kartu-rekap.total {
-  background: #176b38;
-  grid-column: 1 / -1;
-}
-
-.kartu-rekap.total p,
-.kartu-rekap.total strong {
-  color: white;
-}
-
-.rincian-status {
-  background: white;
-  border: 1px solid #d7e8da;
-  border-radius: 13px;
-  padding: 15px;
-  grid-column: 1 / -1;
-}
-
-@media (max-width: 350px) {
-  .rekap-grid {
-    grid-template-columns: 1fr;
-  }
-}
-    /* DESAIN RIWAYAT ABSENSI */
-
-.item-riwayat {
-  background: white;
-  border: 1px solid #d7e8da;
-  border-left: 4px solid #176b38;
-  border-radius: 10px;
-  padding: 13px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 7px rgba(0, 70, 30, 0.06);
-}
-
-.riwayat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  color: #176b38;
-}
-
-.status-riwayat {
-  background: #e8f5e9;
-  color: #176b38;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.riwayat-detail {
-  display: grid;
-  gap: 5px;
-  color: #647568;
-  font-size: 13px;
-}
-    /* TEMA BARU BIRU DAN KUNING */
-
-body {
-  background: linear-gradient(135deg, #eaf2fc, #fff9e6);
-  color: #18365c;
-}
-
-h2 {
-  background: #164e9a;
-  color: white;
-}
-
-h3 {
-  color: #164e9a;
-  border-bottom-color: #f4c542;
-}
-
-button {
-  background: #164e9a;
-  color: white;
-  border: 2px solid #f4c542;
-  font-weight: bold;
-}
-
-button:hover {
-  background: #0d3670;
-}
-
-#ganti {
-  background: #f4c542;
-  color: #18365c;
-  border-color: #d5a91e;
-}
-
-#rekap, #riwayat, #hasil,
-#hasilLaporan {
-  background: #f3f7fc;
-  border-color: #c8d9ef;
-  color: #18365c;
-}
-
-.kartu-rekap {
-  background: white;
-  border-color: #c8d9ef;
-}
-
-.kartu-rekap strong {
-  color: #164e9a;
-}
-
-.kartu-rekap.total {
-  background: #164e9a;
-}
-
-.rincian-status {
-  background: white;
-  border-color: #c8d9ef;
-}
-
-.item-riwayat {
-  border-color: #c8d9ef;
-  border-left-color: #f4c542;
-}
-
-.riwayat-header {
-  color: #164e9a;
-}
-
-.status-riwayat {
-  background: #fff3c4;
-  color: #164e9a;
-}
-
-.kotak-laporan {
-  background: white;
-  border: 1px solid #c8d9ef;
-  border-radius: 12px;
-  padding: 15px;
-}
-
-input[type="date"] {
-  border: 1px solid #164e9a;
-  border-radius: 8px;
-  padding: 10px;
-}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f2f5f8;color:#172033}
+    .wrap{max-width:680px;margin:0 auto;padding:18px}
+    .head{background:#123b2b;color:white;padding:22px;border-radius:16px;margin-bottom:16px}
+    .head h1{font-size:22px;margin:0 0 6px}.head p{margin:0;color:#d7e8df;font-size:14px}
+    .card{background:white;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #0000000c}
+    label{display:block;font-weight:bold;font-size:14px;margin:10px 0 6px}
+    input,select,button{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
+    button{background:#176b45;color:white;border:0;font-weight:bold;margin-top:12px;cursor:pointer}
+    button.secondary{background:#334155} button:disabled{opacity:.5}
+    #reader{width:100%;max-width:460px;margin:12px auto;border-radius:10px;overflow:hidden}
+    .muted{font-size:13px;color:#64748b;line-height:1.5}
+    .msg{padding:12px;border-radius:9px;margin-top:12px;display:none;line-height:1.4}
+    .ok{display:block;background:#dcfce7;color:#166534}.bad{display:block;background:#fee2e2;color:#991b1b}
+    .hidden{display:none}.result{font-size:15px;line-height:1.7}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:8px;border-bottom:1px solid #e2e8f0}
+    @media(max-width:420px){.wrap{padding:10px}.row{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
-<div class="container">
-
-<div style="text-align:center; padding:10px;">
-  <div style="
-    width:85px;
-    height:85px;
-    margin:auto;
-    border-radius:50%;
-    background:#e8f5e9;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:42px;">
-    <img
- src="logo-smas.jpg.jpg"
-  alt="Logo Resmi SMAS Karya Praja"
-  style="
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    display: block;
-    margin: auto;
-  "
->
+<div class="wrap">
+  <div class="head">
+    <h1>E-ABSENSI SMAS KARYA PRAJA</h1>
+    <p>Absensi siswa, guru, dan tenaga kependidikan melalui QR Code</p>
   </div>
 
-  <h2>ABSENSI QR</h2>
+ <div class="card" id="loginCard">
+  <h3>Masuk Petugas</h3>
 
-  <h3 style="border:none; margin-top:8px;">
-    SMAS KARYA PRAJA
-  </h3>
+  <label>Username Guru</label>
+  <input id="username" type="text"
+    placeholder="Masukkan username">
 
-  <p style="color:#647568; font-size:13px;">
-    SISTEM ABSENSI DIGITAL SISWA DAN GURU
+  <label>PIN Pribadi</label>
+  <input id="pin" type="password"
+    inputmode="numeric"
+    placeholder="Masukkan PIN">
+
+  <button onclick="login()">Masuk ke Aplikasi</button>
+
+  <div id="loginMsg" class="msg"></div>
+
+  <p class="muted">
+    Gunakan username dan PIN yang telah diberikan oleh admin sekolah.
   </p>
 </div>
 
-  <label>PIN PETUGAS</label>
-  <input
-    type="password"
-    id="pin"
-    inputmode="numeric"
-    placeholder="Masukkan PIN petugas"
-  >
-  <label>NAMA GURU / PETUGAS PIKET</label>
-  <input
-    type="text"
-    id="petugas"
-    placeholder="Masukkan nama petugas"
-  >
+  <div id="app" class="hidden">
+    <div class="card">
+      <div class="row">
+        <div><label>Jenis absensi</label>
+          <select id="jenis" onchange="updateStatus()">
+            <option value="S">Siswa</option>
+            <option value="T">Guru / Tenaga Kependidikan</option>
+          </select>
+        </div>
+        <div><label>Status</label>
+          <select id="status"></select>
+        </div>
+      </div>
+     <label>Scan QR Code</label>
 
-  <label>STATUS KEHADIRAN</label>
-  <select id="status">
-    <option value="HADIR">HADIR</option>
-    <option value="TERLAMBAT">TERLAMBAT</option>
-    <option value="IZIN">IZIN</option>
-    <option value="SAKIT">SAKIT</option>
-    <option value="ALPA">ALPA</option>
-    <option value="PULANG">PULANG</option>
-    <option value="DINAS">DINAS</option>
-  </select>
-
-  <button onclick="mulaiScan()">AKTIFKAN KAMERA</button>
-  <button id="stop" onclick="hentikanScan()">MATIKAN KAMERA</button>
-  <button id="ganti" onclick="gantiPetugas()">
-  GANTI PETUGAS
+<button type="button" onclick="startScanner()">
+  AKTIFKAN KAMERA
 </button>
-  <button id="lanjut" onclick="scanLagi()" style="display:none">
-    SCAN BERIKUTNYA
-  </button>
 
-  <div id="reader"></div>
-  <!-- MENU LAPORAN ABSENSI -->
-<h3>📋 LAPORAN ABSENSI</h3>
-
-<div class="kotak-laporan">
-  <label for="tanggalLaporan">Pilih Tanggal:</label>
-  <input type="date" id="tanggalLaporan">
-
-  <button onclick="tampilkanLaporan()">
-    TAMPILKAN LAPORAN
-  </button>
-
-  <div id="hasilLaporan">
-    Silakan pilih tanggal untuk melihat laporan.
+<div id="reader"></div>
+      <label for="qrFoto">Pilih Foto QR Code</label>
+<input type="file" id="qrFoto" accept="image/*">
+<button type="button" onclick="scanFotoQR()">Baca QR dari Foto</button>
+      <p class="muted">Arahkan kamera HP guru ke QR Code pada kartu. Izinkan akses kamera jika diminta. Gunakan alamat Web App yang berawalan https://.</p>
+      <div id="scanMsg" class="msg"></div>
+      <button class="secondary" onclick="loadSummary()">Perbarui daftar absensi hari ini</button>
+    </div>
+    <div class="card">
+      <h3>Catatan absensi hari ini</h3>
+      <div id="summary" class="muted">Belum dimuat.</div>
+    </div>
+    <button class="secondary" onclick="logout()">Keluar</button>
   </div>
 </div>
-<h3>REKAP KEHADIRAN HARI INI</h3>
-
-<div id="rekap" class="rekap-grid">
-  <div class="kartu-rekap">
-    <span>👨‍🎓</span>
-    <p>Jumlah Siswa</p>
-    <strong id="jumlahSiswa">0</strong>
-  </div>
-
-  <div class="kartu-rekap">
-    <span>👩‍🏫</span>
-    <p>Guru/Tendik</p>
-    <strong id="jumlahGuru">0</strong>
-  </div>
-
-  <div class="kartu-rekap total">
-    <span>📊</span>
-    <p>Total Absensi</p>
-    <strong id="jumlahTotal">0</strong>
-  </div>
-
-  <div class="rincian-status">
-    <b>Rincian Status Kehadiran</b>
-    <div id="rincianStatus">Memuat data...</div>
-  </div>
-</div>
-  <h3>RIWAYAT ABSENSI HARI INI</h3>
-
-<div id="riwayat">
-  Memuat riwayat absensi...
-</div>
-  <h3>HASIL ABSENSI</h3>
-  <div id="hasil">Siap melakukan pemindaian QR.</div>
-
-</div>
-
 <script>
-const URL_APPS_SCRIPT =
-"https://script.google.com/macros/s/AKfycbzHcBAnuWQKkpFDg0MRPn019gDyyU_Yue3vOqlUMT7rC_rDy4lraLXnCOObYSYX8Kek/exec";
-
-let scanner = null;
-let berjalan = false;
-let sedangMulai = false;
-let sedangProses = false;
-
-function tampilkan(pesan) {
-  document.getElementById("hasil").innerText = pesan;
+let usernameValue='', pinValue='', petugasValue='', scanner=null, busy=false, lastText='', lastAt=0;
+function showMsg(id, text, good){
+  const el=document.getElementById(id); el.textContent=text;
+  el.className='msg '+(good?'ok':'bad');
 }
+function login(){
+  const username = document.getElementById('username').value.trim();
+  const pin = document.getElementById('pin').value.trim();
 
-// MEMULAI KAMERA
-function mulaiScan() {
-  if (berjalan || sedangMulai) return;
-
-  if (!document.getElementById("pin").value.trim()) {
-    alert("Masukkan PIN petugas terlebih dahulu.");
+  if(!username || !pin){
+    showMsg('loginMsg','Masukkan username dan PIN.',false);
     return;
   }
 
-  if (!document.getElementById("petugas").value.trim()) {
-    alert("Masukkan nama petugas terlebih dahulu.");
+  google.script.run
+    .withSuccessHandler(r=>{
+      if(r.ok){
+        usernameValue = username;
+        pinValue = pin;
+        petugasValue = r.nama;
+
+        document.getElementById('loginCard').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+
+        updateStatus();
+        loadSummary();
+
+        showMsg('scanMsg','Selamat datang, '+petugasValue+'.',true);
+      } else {
+        showMsg('loginMsg',r.message,false);
+      }
+    })
+    .withFailureHandler(e=>{
+      showMsg('loginMsg',e.message || 'Gagal menghubungi server.',false);
+    })
+    .cekLoginPetugas(username,pin);
+}
+function updateStatus(){
+  const isStudent=document.getElementById('jenis').value==='S';
+  const options=isStudent?['HADIR','TERLAMBAT','IZIN','SAKIT','ALPA']:['HADIR','TERLAMBAT','PULANG','IZIN','SAKIT','DINAS'];
+  document.getElementById('status').innerHTML=options.map(x=>'<option>'+x+'</option>').join('');
+}
+function startScanner() {
+  const reader = document.getElementById('reader');
+  reader.innerHTML = '';
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showMsg('scanMsg', 'Browser tidak menyediakan akses kamera.', false);
     return;
   }
 
-  sedangMulai = true;
-  scanner = new Html5Qrcode("reader");
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'environment' }
+  })
+  .then(stream => {
+    stream.getTracks().forEach(track => track.stop());
 
-  scanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: { width: 250, height: 250 } },
+    showMsg('scanMsg', 'Tes kamera berhasil. Kamera dapat diakses.', true);
 
-    function(decodedText) {
-      if (sedangProses) return;
+    scanner = new Html5Qrcode('reader');
 
-      sedangProses = true;
-      scanner.pause(true);
-      kirimAbsensi(decodedText);
-    },
-
-    function(errorMessage) {}
-
-  ).then(function() {
-    berjalan = true;
-    sedangMulai = false;
-    tampilkan("Kamera aktif. Silakan pindai QR.");
-
-  }).catch(function(error) {
-    sedangMulai = false;
-    tampilkan("Kamera gagal dibuka: " + error);
+    scanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 240, height: 240 } },
+      onScan,
+      () => {}
+    ).catch(error => {
+      showMsg('scanMsg', 'Tes berhasil, tetapi pemindai gagal: ' + error, false);
+    });
+  })
+  .catch(error => {
+    showMsg(
+      'scanMsg',
+      'Tes kamera gagal. Nama kesalahan: ' + error.name +
+      '. Keterangan: ' + error.message,
+      false
+    );
   });
 }
+function scanFotoQR() {
+  const file = document.getElementById('qrFoto').files[0];
 
-// MENGIRIM DATA ABSENSI
-async function kirimAbsensi(qrText) {
-  tampilkan("QR terbaca: " + qrText + "\nMengirim data absensi...");
-
-  const data = {
-    pin: document.getElementById("pin").value.trim(),
-    qrText: qrText,
-    status: document.getElementById("status").value,
-    namaPetugas: document.getElementById("petugas").value.trim()
-  };
-
-  try {
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      throw new Error("Server memberikan respons " + response.status);
-    }
-
-    const hasil = await response.json();
-
-    if (hasil.ok) {
-      tampilkan(
-        "BERHASIL DISIMPAN\n\n" +
-        "Nama: " + hasil.nama + "\n" +
-        "ID: " + qrText + "\n" +
-        "Jenis: " + hasil.jenis + "\n" +
-        "Kelompok: " + hasil.kelompok + "\n" +
-        "Status: " + hasil.status + "\n" +
-        "Jam: " + hasil.jam
-      );
-    } else {
-      tampilkan("ABSENSI DITOLAK\n\n" + hasil.message);
-    }
-
-  } catch (error) {
-    tampilkan(
-      "GAGAL MENGHUBUNGI SERVER\n\n" +
-      error.message +
-      "\n\nPeriksa koneksi dan konfigurasi Web App."
-    );
-  }
-
-  document.getElementById("lanjut").style.display = "block";
-  sedangProses = false;
-
-  muatRekap();
-  muatRiwayat();
-}
-
-// SCAN BERIKUTNYA
-function scanLagi() {
-  if (scanner && berjalan) {
-    document.getElementById("lanjut").style.display = "none";
-    sedangProses = false;
-    scanner.resume();
-    tampilkan("Silakan pindai QR berikutnya.");
-  }
-}
-
-// MEMATIKAN KAMERA
-function hentikanScan() {
-  if (scanner && berjalan) {
-    scanner.stop().then(function() {
-      scanner.clear();
-      berjalan = false;
-      sedangProses = false;
-      tampilkan("Kamera sudah dimatikan.");
-
-    }).catch(function(error) {
-      tampilkan("Gagal mematikan kamera: " + error);
-    });
-  }
-}
-  // GANTI PETUGAS
-async function gantiPetugas() {
-  if (scanner && berjalan) {
-    try {
-      await scanner.stop();
-      scanner.clear();
-    } catch (error) {
-      tampilkan("Kamera gagal dimatikan: " + error);
-      return;
-    }
-  }
-
-  scanner = null;
-  berjalan = false;
-  sedangMulai = false;
-  sedangProses = false;
-
-  document.getElementById("pin").value = "";
-  document.getElementById("petugas").value = "";
-  document.getElementById("status").value = "HADIR";
-  document.getElementById("lanjut").style.display = "none";
-
-  tampilkan("Petugas sebelumnya sudah keluar. Silakan masukkan PIN dan nama petugas berikutnya.");
-}
-
-// MEMUAT REKAP
-async function muatRekap() {
-  const tempat = document.getElementById("rekap");
-
-  try {
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify({
-        action: "REKAP"
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Gagal mengambil data rekap.");
-    }
-
-    const data = await response.json();
-
-    if (!data.ok) {
-      throw new Error("Data rekap tidak tersedia.");
-    }
-
-    let rincian = "";
-
-Object.entries(data.status).forEach(([nama, jumlah]) => {
-  rincian += `<p>${nama}: <b>${jumlah}</b></p>`;
-});
-
-document.getElementById("jumlahSiswa").innerText = data.siswa;
-document.getElementById("jumlahGuru").innerText = data.guru;
-document.getElementById("jumlahTotal").innerText = data.total;
-
-document.getElementById("rincianStatus").innerHTML =
-  rincian || "<p>Belum ada absensi hari ini.</p>";
-
-} catch (error) {
-  tempat.innerHTML = "Rekap belum dapat dimuat: " + error.message;
-}
-}
-
-// MEMUAT RIWAYAT
-async function muatRiwayat() {
-  const tempat = document.getElementById("riwayat");
-
-  try {
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify({
-        action: "RIWAYAT"
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Gagal mengambil riwayat.");
-    }
-
-    const hasil = await response.json();
-
-    if (!hasil.ok) {
-      throw new Error("Riwayat tidak tersedia.");
-    }
-
-    if (hasil.data.length === 0) {
-      tempat.innerHTML = "Belum ada absensi hari ini.";
-      return;
-    }
-
-    tempat.innerHTML = hasil.data.map(item => `
-  <div class="item-riwayat">
-    <div class="riwayat-header">
-      <b>${item.nama}</b>
-      <span class="status-riwayat">${item.status}</span>
-    </div>
-    <div class="riwayat-detail">
-      <span>ID: ${item.id}</span>
-      <span>Jenis: ${item.jenis}</span>
-      <span>Kelas/Jabatan: ${item.kelompok}</span>
-      <span>Jam: ${item.jam}</span>
-    </div>
-  </div>
-`).join("");
-
-  } catch (error) {
-    tempat.innerHTML =
-      "GAGAL MEMUAT RIWAYAT: " + error.message;
-  }
-}
-// MENAMPILKAN LAPORAN ABSENSI
-async function tampilkanLaporan() {
-  const tanggal = document.getElementById("tanggalLaporan").value;
-  const tempat = document.getElementById("hasilLaporan");
-
-  if (!tanggal) {
-    alert("Silakan pilih tanggal laporan terlebih dahulu.");
+  if (!file) {
+    showMsg('scanMsg', 'Pilih foto QR Code terlebih dahulu.', false);
     return;
   }
 
-  tempat.innerHTML = "Sedang mengambil data laporan...";
-
-  try {
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify({
-        action: "LAPORAN",
-        tanggal: tanggal
-      })
-    });
-
-    const hasil = await response.json();
-
-    if (!hasil.ok) {
-      throw new Error(hasil.message || "Laporan gagal dimuat.");
-    }
-
-    let rincian = "";
-
-    Object.entries(hasil.status).forEach(([nama, jumlah]) => {
-      rincian += `<p>${nama}: <b>${jumlah}</b></p>`;
-    });
-
-    let daftar = "";
-
-    if (hasil.data.length > 0) {
-      daftar = hasil.data.map(item => `
-        <div class="item-riwayat">
-          <b>${item.nama}</b>
-          <div class="riwayat-detail">
-            <span>ID: ${item.id}</span>
-            <span>Jenis: ${item.jenis}</span>
-            <span>Kelas/Jabatan: ${item.kelompok}</span>
-            <span>Status: ${item.status}</span>
-            <span>Jam: ${item.jam}</span>
-          </div>
-        </div>
-      `).join("");
-    } else {
-      daftar = "<p>Tidak ada data absensi pada tanggal ini.</p>";
-    }
-
-    tempat.innerHTML = `
-      <h3>HASIL LAPORAN</h3>
-      <p>Tanggal: <b>${tanggal}</b></p>
-      <p>Jumlah Siswa: <b>${hasil.siswa}</b></p>
-      <p>Jumlah Guru/Tendik: <b>${hasil.guru}</b></p>
-      <p>Total Absensi: <b>${hasil.total}</b></p>
-      <hr>
-      <b>Rincian Status</b>
-      ${rincian || "<p>Belum ada data.</p>"}
-      <hr>
-      <b>Daftar Kehadiran</b>
-      ${daftar}
-    `;
-
-  } catch (error) {
-    tempat.innerHTML = "GAGAL MEMUAT LAPORAN: " + error.message;
+  if (!window.Html5Qrcode) {
+    showMsg('scanMsg', 'Library pembaca QR belum tersedia.', false);
+    return;
   }
+
+  const pembaca = new Html5Qrcode('reader');
+
+  pembaca.scanFile(file, true)
+    .then(decodedText => {
+      onScan(decodedText);
+    })
+    .catch(error => {
+      showMsg('scanMsg', 'QR Code tidak terbaca. Coba foto yang lebih jelas.', false);
+    })
+    .finally(() => {
+      pembaca.clear().catch(() => {});
+    });
+}function onScan(decodedText){
+  const now=Date.now();
+  if(busy || (decodedText===lastText && now-lastAt<4000)) return;
+  busy=true;lastText=decodedText;lastAt=now;
+  const expected=document.getElementById('jenis').value;
+  if(!(expected==='S' && decodedText.startsWith('S:')) && !(expected==='T' && decodedText.startsWith('T:'))){
+    showMsg('scanMsg','QR bukan untuk jenis absensi yang dipilih. Ubah pilihan jenis absensi.',false);busy=false;return;
+  }
+  const status=document.getElementById('status').value;
+  google.script.run.withSuccessHandler(r=>{
+    if(r.ok){
+      showMsg('scanMsg',r.message+' '+r.nama+' — '+r.kelompok+' — '+r.status+' — '+r.jam,true);
+      loadSummary();
+    } else showMsg('scanMsg',r.message,false);
+    busy=false;
+  }).withFailureHandler(e=>{showMsg('scanMsg',e.message||'Gagal menyimpan absensi.',false);busy=false;})
+    .processScan(usernameValue,pinValue,decodedText,status);
 }
-// MEMUAT REKAP DAN RIWAYAT SAAT HALAMAN DIBUKA
-window.addEventListener("load", function() {
-  muatRekap();
-  muatRiwayat();
-});
+function loadSummary(){
+  google.script.run.withSuccessHandler(r=>{
+    if(!r.ok){document.getElementById('summary').textContent=r.message;return;}
+    if(!r.rows.length){document.getElementById('summary').textContent='Belum ada absensi hari ini.';return;}
+    let html='<table><tr><th>Jam</th><th>Nama</th><th>Jenis</th><th>Status</th></tr>';
+    r.rows.forEach(x=>html+='<tr><td>'+x.jam+'</td><td>'+escapeHtml(x.nama)+'</td><td>'+x.jenis+'</td><td>'+x.status+'</td></tr>');
+    html+='</table>';document.getElementById('summary').innerHTML=html;
+  }).getDailySummary(usernameValue,pinValue);
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function logout(){
+  if(scanner){
+    scanner.stop().then(()=>{
+      scanner.clear();
+      scanner=null;
+    }).catch(()=>{
+      scanner=null;
+    });
+  }
+
+  usernameValue='';
+  pinValue='';
+  petugasValue='';
+
+  document.getElementById('username').value='';
+  document.getElementById('pin').value='';
+
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+}
 </script>
 </body>
 </html>
+
+  
